@@ -1,0 +1,8 @@
+foreach subj (`cat PREP_TO_DO.txt`)
+rm -f ${subj}/${subj}.dmrirc
+ls ${subj}/*/*.1.*.dcm
+ls ${subj}/*/*_bvecs
+ls ${subj}/*/*_bvals
+echo
+end
+

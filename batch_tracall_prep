@@ -1,0 +1,54 @@
+#!/usr/bin/tcsh
+foreach subj (`cat subj.txt`)
+	echo ${subj}
+if ( -d /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom) then
+	echo "dti dicom dir exists"
+	if ( -e /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom/*.1.*.dcm) then
+		echo "first dicom exists"
+	#if (-d /media/Data/Temple/Temple_Tracula/${subj}/*dpath) then
+	#	echo "Already processed!"
+	#else
+	#	echo "Not Done Starting prep!"
+		if ( -d /media/Data/Temple/Temple_Tracula/${subj}/surf) then
+			echo "Freesurfed brain exists"
+			trac-all -prep -s ${subj} -c `ls /media/Data/Temple/Temple_Tracula/${subj}/${subj}.dmrirc`
+			if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+				echo "Waiting for prep to complete..."
+				sleep 15m
+				if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+					echo "Waiting for prep to complete..."
+					sleep 12m
+					if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+						echo "Prep still running check for Error SKIPPING subject for now..."
+						echo ${subj} >>! SKIPPED_AT_PATH_STAGE.txt
+					else
+						trac-all -bedp -s ${subj} -c `ls /media/Data/Temple/Temple_Tracula/${subj}/${subj}.dmrirc`
+					sleep 8h
+					endif
+				else
+				trac-all -bedp -s ${subj} -c `ls /media/Data/Temple/Temple_Tracula/${subj}/${subj}.dmrirc`	
+				sleep 1h
+				endif
+			else
+			trac-all -bedp -s ${subj} -c `ls /media/Data/Temple/Temple_Tracula/${subj}/${subj}.dmrirc`
+			sleep 8h
+			endif
+		else
+			echo "Missing Freesurfer"
+			echo ${subj} >>! MISSING_FS_DIR.txt
+		endif
+	#endif
+	else
+		echo "Missing first dicom"
+		echo ${subj} >>! MISSING_dcm.txt
+	endif
+	
+else
+	echo "dti dicom dir missing"
+	echo ${subj} >>! MISSING_DICOM_DIR.txt
+endif
+				echo
+				echo
+				echo 
+				echo
+end

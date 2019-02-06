@@ -1,0 +1,79 @@
+#!/usr/bin/tcsh
+foreach subj (`ls -d MISSING*`)
+	echo ${subj}
+if ( -d /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom) then
+	echo "dti dicom dir exists"
+	if ( -e /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom/*/DICOM/*.1.*.dcm) then
+		echo "first dicom exists"
+		if ( -d /media/Data/Temple/Temple_Tracula/${subj}/surf) then
+			echo "Freesurfed brain exists"
+			if (-d /media/Data/Temple/Temple_Tracula/${subj}/${subj}/dmri.bedpostX) then
+				echo "Bedpost done!"
+				if (-d /media/Data/Temple/Temple_Tracula/${subj}/${subj}/dpath) then
+					echo "Path done! Skipping ${subj}"
+					echo "${subj}">>! Skipped_Path.txt
+				else
+					trac-all -path -s ${subj} -c `ls /media/Data/Temple/Temple_Tracula/${subj}/${subj}.dmrirc`
+				endif			
+				if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+					if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+						echo "Path has Error SKIPPING subject for now..."
+						echo ${subj} >>! Error_Path.txt
+					else
+						 echo "Waiting for path to complete..."
+					endif
+					if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+						if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+							echo "Path has Error SKIPPING subject for now..."
+							echo ${subj} >>! Error_Path.txt
+						else
+							echo "Waiting for path to complete..."
+						endif
+						if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+							if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+									echo "Path has Error SKIPPING subject for now..."
+									echo ${subj} >>! Error_Path.txt
+								else
+									echo "Waiting for path to complete..."
+								endif
+							if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+								if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+									echo "Path has Error SKIPPING subject for now..."
+									echo ${subj} >>! Error_Path.txt
+								else
+									echo "Waiting for path to complete..."
+								endif
+							else
+							echo "Path Done!"
+							endif
+						else
+						echo "Path Done!"
+						endif
+					else
+					echo "Path Done!"
+					endif
+				else
+				echo "Path Done!"
+				endif
+			else
+				echo "BedPost Not Done!"
+				echo ${subj}>>! MISSING_Bedpostx.txt
+			endif
+		else
+			echo "Missing Freesurfer"
+			echo ${subj} >>! MISSING_FS_DIR.txt
+		endif
+	else
+		echo "Missing first dicom"
+		echo ${subj} >>! MISSING_dcm.txt
+	endif
+	
+else
+	echo "dti dicom dir missing"
+	echo ${subj} >>! MISSING_DICOM_DIR.txt
+endif
+				echo
+				echo
+				echo 
+				echo
+end

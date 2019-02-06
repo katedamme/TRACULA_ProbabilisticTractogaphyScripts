@@ -1,0 +1,23 @@
+#foreach subj (`cat PREP_TO_DO.txt`)
+foreach subj ( `ls -d 3131*` )
+echo ${subj}
+rm -f ${subj}/${subj}.dmrirc
+echo "setenv SUBJECTS_DIR /media/Data/Temple/Temple_Tracula" >>! ${subj}/${subj}.dmrirc
+echo "set subjlist = (${subj})" >> ${subj}/${subj}.dmrirc
+echo "set runlist = (1)" >> ${subj}/${subj}.dmrirc
+echo "set dcmroot = $SUBJECTS_DIR" >> ${subj}/${subj}.dmrirc
+echo "set dcmlist = (`ls ${subj}/*/*.1.*.dcm`)">> ${subj}/${subj}.dmrirc
+echo "set bvecfile =  ( `ls ${subj}/*/*_bvecs` )">> ${subj}/${subj}.dmrirc
+echo "set bvalfile = (`ls ${subj}/*/*_bvals`  )">> ${subj}/${subj}.dmrirc
+echo "set doeddy = 1">> ${subj}/${subj}.dmrirc
+echo "set dorotbvecs = 1">> ${subj}/${subj}.dmrirc
+echo "set usemaskanat = 1">> ${subj}/${subj}.dmrirc
+echo "set thrbet = 0.3">> ${subj}/${subj}.dmrirc
+echo "set doregflt = 0">> ${subj}/${subj}.dmrirc
+echo "set doregbbr = 1">> ${subj}/${subj}.dmrirc
+echo "set doregmni = 1">> ${subj}/${subj}.dmrirc
+echo "set mnitemp = /usr/local/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz">> ${subj}/${subj}.dmrirc
+echo "set ncpts = (6 6 5 5 5 5 7 5 5 5 5 5 4 4 5 5 5 5)">> ${subj}/${subj}.dmrirc
+echo "${subj} done!"
+end
+

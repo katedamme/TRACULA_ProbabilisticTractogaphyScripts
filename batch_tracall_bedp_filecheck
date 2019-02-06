@@ -1,0 +1,68 @@
+#!/usr/bin/tcsh
+foreach subj (`cat PATH_ONLY.txt`)
+	echo ${subj}
+if ( -d /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom) then
+	echo "dti dicom dir exists"
+	if ( -e /media/Data/Temple/Temple_Tracula/${subj}/dti_dicom/*/DICOM/*.1.*.dcm) then
+		echo "first dicom exists"
+		if ( -d /media/Data/Temple/Temple_Tracula/${subj}/surf) then
+			echo "Freesurfed brain exists"
+			trac-all -bedp -s ${subj}-c `ls /media/Data/Temple/Temple_Tracula/${subj}/*.dmrirc`
+			if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+				if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+					echo "bedp has Error SKIPPING subject for now..."
+					echo ${subj} >>! Error_bedp.txt
+				else
+					echo "Waiting for bedp to complete..."
+				endif
+				if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+					if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+						echo "bedp has Error SKIPPING subject for now..."
+						echo ${subj} >>! Error_bedp.txt
+					else
+						echo "Waiting for bedp to complete..."
+					endif
+					if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+						if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+								echo "bedp has Error SKIPPING subject for now..."
+								echo ${subj} >>! Error_bedp.txt
+							else
+								echo "Waiting for bedp to complete..."
+							endif
+						if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/IsRunning.trac) then
+							if ( -e /media/Data/Temple/Temple_Tracula/${subj}/script/trac-all.error) then
+								echo "bedp has Error SKIPPING subject for now..."
+								echo ${subj} >>! Error_bedp.txt
+							else
+								echo "Waiting for bedp to complete..."
+							endif
+						else
+						echo "bedp Done!"
+						endif
+					else
+					echo "bedp Done!"
+					endif
+				else
+				echo "bedp Done!"
+				endif
+			else
+			echo "bedp Done!"
+			endif
+		else
+			echo "Missing Freesurfer"
+			echo ${subj} >>! MISSING_FS_DIR.txt
+		endif
+	else
+		echo "Missing first dicom"
+		echo ${subj} >>! MISSING_dcm.txt
+	endif
+	
+else
+	echo "dti dicom dir missing"
+	echo ${subj} >>! MISSING_DICOM_DIR.txt
+endif
+				echo
+				echo
+				echo 
+				echo
+end

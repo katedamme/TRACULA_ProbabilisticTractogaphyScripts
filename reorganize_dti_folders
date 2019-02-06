@@ -1,0 +1,10 @@
+# tcsh
+# Reorganize for download from NUNDA may nee update for NUNDA changes
+foreach subj (`cat subj.txt`)
+mkdir $SUBJECTS_DIR/${subj}/dti
+mkdir $SUBJECTS_DIR/${subj}/dti_dicom
+mv $SUBJECTS_DIR/${subj}/*reconstructions/DTI_Temple/*/out/DATA/* ${subj}/dti
+mv $SUBJECTS_DIR/${subj}/ASSESSORS/FS_v5-3-0_*/out/DATA/* ${subj}
+mv $SUBJECTS_DIR/${subj}/*scans/?/DICOM ${subj}/dti_dicom
+end
+
